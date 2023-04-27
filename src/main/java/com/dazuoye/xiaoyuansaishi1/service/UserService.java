@@ -1,6 +1,8 @@
 package com.dazuoye.xiaoyuansaishi1.service;
 
 import com.dazuoye.xiaoyuansaishi1.dto.Result;
+import com.dazuoye.xiaoyuansaishi1.dto.UserDTO;
+import com.dazuoye.xiaoyuansaishi1.dto.UserLoginDTO;
 import com.dazuoye.xiaoyuansaishi1.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -14,6 +16,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface UserService extends IService<User> {
 
-    Result userReg(User user);
+    Result userReg(UserDTO userdto);
 
+    Result sendCode(String phone);
+
+    Result userLogin(UserLoginDTO userLoginDTO);
 }

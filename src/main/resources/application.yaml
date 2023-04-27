@@ -25,6 +25,8 @@ spring:
 
 mybatis-plus:
   type-aliases-package: com.dazuoye.xiaoyuansaishi1.entity
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 logging:
   level:

@@ -45,10 +45,10 @@ public class User implements Serializable {
     private String number;
 
     @ApiModelProperty(value = "联系号码")
-    private Integer phone;
+    private String phone;
 
     @ApiModelProperty(value = "用户性别，1：男，0：女")
-    private Boolean sex;
+    private int sex;
 
 
 }
