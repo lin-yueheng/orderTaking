@@ -1,40 +1,28 @@
 package com.dazuoye.xiaoyuansaishi1.controller;
 
 
+import com.dazuoye.xiaoyuansaishi1.dto.AuthorDTO;
 import com.dazuoye.xiaoyuansaishi1.dto.Result;
 import com.dazuoye.xiaoyuansaishi1.dto.UpdatePwdDTO;
-import com.dazuoye.xiaoyuansaishi1.dto.UserDTO;
-import com.dazuoye.xiaoyuansaishi1.service.UserService;
+import com.dazuoye.xiaoyuansaishi1.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
-
 /**
  * <p>
- * 学生表 前端控制器
+ * 主办方表 前端控制器
  * </p>
  *
  * @author ${author}
- * @since 2023-04-24
+ * @since 2023-04-29
  */
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/author")
 @CrossOrigin
-public class UserController {
+public class AuthorController {
 
     @Autowired
-    private UserService userService;
-
-    /**
-     * 学生注册
-     * @param userdto
-     * @return
-     */
-    @PostMapping("/register")
-    public Result userReg(@RequestBody UserDTO userdto){
-        return userService.userReg(userdto);
-    }
+    private AuthorService authorService;
 
     /**
      * 发送验证码
@@ -44,18 +32,18 @@ public class UserController {
     @GetMapping("/code/{phone}")
     public Result sendCode(@PathVariable("phone") String phone) {
         // TODO 发送短信验证码并保存验证码
-        return userService.sendCode(phone);
+        return authorService.sendCode(phone);
     }
 
     /**
-     * 学生登录
-     * @param userDTO
+     * 主办方登录
+     * @param authorDTO
      * @return
      */
     @PostMapping("/login")
-    public Result login(@RequestBody UserDTO userDTO){
+    public Result login(@RequestBody AuthorDTO authorDTO){
         // TODO 实现登录功能
-        return userService.userLogin(userDTO);
+        return authorService.authorLogin(authorDTO);
     }
 
     /**
@@ -66,7 +54,7 @@ public class UserController {
     @GetMapping("/checkPhone/{phone}")
     public Result checkPhone(@PathVariable("phone") String phone){
         // TODO 检验手机号是否已注册
-        return userService.checkPhone(phone);
+        return authorService.checkPhone(phone);
     }
 
     /**
@@ -76,7 +64,7 @@ public class UserController {
      */
     @PutMapping("/updatePWD")
     public Result updatePWD(@RequestBody UpdatePwdDTO updatePwdDTO){
-        return userService.updatePwd(updatePwdDTO);
+        return authorService.updatePwd(updatePwdDTO);
     }
 }
 

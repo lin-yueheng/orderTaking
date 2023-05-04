@@ -4,18 +4,20 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.RandomUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.dazuoye.xiaoyuansaishi1.dto.AuthorDTO;
 import com.dazuoye.xiaoyuansaishi1.dto.Result;
 import com.dazuoye.xiaoyuansaishi1.dto.UpdatePwdDTO;
-import com.dazuoye.xiaoyuansaishi1.dto.UserDTO;
+import com.dazuoye.xiaoyuansaishi1.entity.Author;
 import com.dazuoye.xiaoyuansaishi1.entity.User;
-import com.dazuoye.xiaoyuansaishi1.mapper.UserMapper;
-import com.dazuoye.xiaoyuansaishi1.service.UserService;
+import com.dazuoye.xiaoyuansaishi1.mapper.AuthorMapper;
+import com.dazuoye.xiaoyuansaishi1.service.AuthorService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dazuoye.xiaoyuansaishi1.utils.RegexUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -23,69 +25,22 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.dazuoye.xiaoyuansaishi1.utils.RedisConstants.*;
+import static com.dazuoye.xiaoyuansaishi1.utils.RedisConstants.LOGIN_USER_TTL;
 
 /**
  * <p>
- * 学生表 服务实现类
+ * 主办方表 服务实现类
  * </p>
  *
  * @author ${author}
- * @since 2023-04-24
+ * @since 2023-04-29
  */
 @Service
 @Slf4j
-public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
+public class AuthorServiceImpl extends ServiceImpl<AuthorMapper, Author> implements AuthorService {
 
     @Resource
     private StringRedisTemplate stringRedisTemplate;
-
-    @Override
-    public Result userReg(UserDTO userdto){
-        // TODO 1.校验手机号
-        String phone = userdto.getPhone();
-//        if (RegexUtils.isPhoneInvalid(phone)) {
-//            // TODO 2.如果不符合，返回错误信息
-//            return Result.fail("手机号格式错误！");
-//        }
-        // TODO 3.从redis获取验证码并校验
-        String cacheCode = stringRedisTemplate.opsForValue().get(REG_CODE_KEY + phone);
-        System.out.println(cacheCode);
-        String code = userdto.getCode();
-        if (cacheCode == null || !cacheCode.equals(code)) {
-            // TODO 不一致，报错
-            return Result.fail("验证码错误");
-        }
-
-        // TODO 4.一致，根据手机号查询用户 select * from tb_user where phone = ?
-        User user = query().eq("phone", phone).one();
-
-        // TODO 5.判断用户是否存在
-        if (user == null) {
-            // TODO 6.不存在，创建新用户并保存
-            createUser(userdto);
-        }else{
-            return Result.fail("该手机号已注册");
-        }
-
-        // TODO 7.注册成功则从redis中删除使用的验证码
-        Boolean delete = stringRedisTemplate.opsForValue().getOperations().delete(REG_CODE_KEY + phone);
-        System.out.println("删除redis验证码"+delete);
-
-        return Result.ok();
-    }
-
-    private User createUser(UserDTO userdto) {
-        User user = new User();
-        user.setUsername(userdto.getUsername());
-        user.setPassword(userdto.getPassword());
-        user.setSchool(userdto.getSchool());
-        user.setUserclass(userdto.getUserclass());
-        user.setNumber(userdto.getNumber());
-        user.setPhone(userdto.getPhone());
-        user.setSex(userdto.getSex());
-        save(user);
-        return user;
-    }
 
     @Override
     public Result sendCode(String phone) {
@@ -107,17 +62,26 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public Result userLogin(UserDTO userDTO){
-
+    public Result authorLogin(AuthorDTO authorDTO) {
         // TODO 1.获取表单输入的用户名和密码
-        String username = userDTO.getUsername();
-        String password = userDTO.getPassword();
+        String authorname = authorDTO.getAuthorname();
+        String password = authorDTO.getPassword();
 
         // TODO 2.判断用户是否存在
-        User user = query().eq("username", username).eq("password",password).one();
+        //Author author = query().eq("authorname", authorname).eq("password",password).one();
 
-        if(user == null){
+        LambdaQueryWrapper<Author> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper
+                .select(Author::getId,Author::getAuthorname,Author::getPassword,Author::getCompanyName,Author::getPhone,Author::getStatus)
+                .eq(Author::getPassword,password)
+                .eq(Author::getAuthorname,authorname);
+
+        Author author = getOne(lambdaQueryWrapper);
+
+        if(author == null){
             return Result.fail("用户不存在或输入有误");
+        }else if(author.getStatus()==0 || author.getStatus()==-1){
+            return Result.fail("账号未审核，无法登录");
         }
 
         // TODO 3.保存用户信息到 redis中
@@ -126,14 +90,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String token = UUID.randomUUID().toString(true);//不带中划线-
 
         // TODO 将user对象转换成hashmap储存
-        Map<String, Object> userMap = BeanUtil.beanToMap(user, new HashMap<>(),
+
+        Map<String, Object> authormap = BeanUtil.beanToMap(author, new HashMap<>(),
                 CopyOptions.create()
                         .setIgnoreNullValue(true)
+                        .setIgnoreProperties("proof")
                         .setFieldValueEditor((fieldName, fieldValue) -> fieldValue.toString()));
 
         // TODO 存储
         String tokenKey = LOGIN_USER_KEY + token;
-        stringRedisTemplate.opsForHash().putAll(tokenKey, userMap);
+        stringRedisTemplate.opsForHash().putAll(tokenKey, authormap);
 
         // TODO 设置token有效期 分钟
         stringRedisTemplate.expire(tokenKey, LOGIN_USER_TTL, TimeUnit.MINUTES);
@@ -143,12 +109,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public Result checkPhone(String phone){
-
+    public Result checkPhone(String phone) {
         // TODO 1.查询数据库是否存在手机号
-        User user = query().eq("phone", phone).one();
+        Author author = query().eq("phone", phone).one();
 
-        if(user==null){
+        if(author==null){
             return Result.fail("手机号未注册账号");
         }
 
@@ -161,7 +126,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public Result updatePwd(UpdatePwdDTO updatePwdDTO) {
-
         String phone = updatePwdDTO.getPhone();
         String password = updatePwdDTO.getPassword();
         String confirmPwd = updatePwdDTO.getConfirmPwd();
@@ -170,14 +134,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return Result.fail("密码不一致");
         }
 
-        User user = query().eq("phone", phone).one();
-        String sqlPWD = user.getPassword();
+        Author author = query().eq("phone", phone).one();
+        String sqlPWD = author.getPassword();
 
         if(password.equals(sqlPWD) && confirmPwd.equals(sqlPWD)){
             return Result.fail("新密码不能与原密码相同");
         }
 
-        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+        UpdateWrapper<Author> updateWrapper = new UpdateWrapper<>();
         updateWrapper.set("password",password).eq("phone",phone);
 
         Boolean update =update(updateWrapper);
