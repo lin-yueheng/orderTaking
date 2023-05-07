@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.dazuoye.xiaoyuansaishi1.dto.AuthorDTO;
 import com.dazuoye.xiaoyuansaishi1.dto.Result;
 import com.dazuoye.xiaoyuansaishi1.dto.UpdatePwdDTO;
+import com.dazuoye.xiaoyuansaishi1.dto.UserDTO;
 import com.dazuoye.xiaoyuansaishi1.entity.Author;
 import com.dazuoye.xiaoyuansaishi1.entity.User;
 import com.dazuoye.xiaoyuansaishi1.mapper.AuthorMapper;
@@ -148,5 +149,54 @@ public class AuthorServiceImpl extends ServiceImpl<AuthorMapper, Author> impleme
         System.out.println("修改密码"+update);
 
         return Result.ok();
+    }
+
+    @Override
+    public Result authorReg(AuthorDTO authorDTO) {
+
+        // TODO 1.校验手机号
+        String phone = authorDTO.getPhone();
+//        if (RegexUtils.isPhoneInvalid(phone)) {
+//            // TODO 2.如果不符合，返回错误信息
+//            return Result.fail("手机号格式错误！");
+//        }
+        // TODO 3.从redis获取验证码并校验
+        String cacheCode = stringRedisTemplate.opsForValue().get(REG_CODE_KEY + phone);
+        System.out.println(cacheCode);
+        String code = authorDTO.getCode();
+        if (cacheCode == null || !cacheCode.equals(code)) {
+            // TODO 不一致，报错
+            return Result.fail("验证码错误");
+        }
+
+        // TODO 4.一致，根据手机号查询用户 select * from tb_user where phone = ?
+        Author author = query().eq("phone", phone).one();
+
+        // TODO 5.判断用户是否存在
+        if (author == null) {
+            // TODO 6.不存在，创建新用户并保存
+            createAuthor(authorDTO);
+        }else{
+            return Result.fail("该手机号已注册");
+        }
+
+        // TODO 7.注册成功则从redis中删除使用的验证码
+        Boolean delete = stringRedisTemplate.opsForValue().getOperations().delete(REG_CODE_KEY + phone);
+        System.out.println("删除redis验证码"+delete);
+
+        return Result.ok();
+    }
+
+    private Author createAuthor(AuthorDTO authorDTO) {
+        Author author = new Author();
+        author.setAuthorname(authorDTO.getAuthorname());
+        author.setPassword(authorDTO.getPassword());
+        author.setCompanyName(authorDTO.getCompanyName());
+        author.setPhone(authorDTO.getPhone());
+        author.setStatus(1);
+        author.setProof(authorDTO.getProof());
+        System.out.println("=================="+authorDTO.getProof());
+        save(author);
+        return author;
     }
 }

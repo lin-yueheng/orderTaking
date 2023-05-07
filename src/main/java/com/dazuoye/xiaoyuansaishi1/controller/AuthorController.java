@@ -4,9 +4,15 @@ package com.dazuoye.xiaoyuansaishi1.controller;
 import com.dazuoye.xiaoyuansaishi1.dto.AuthorDTO;
 import com.dazuoye.xiaoyuansaishi1.dto.Result;
 import com.dazuoye.xiaoyuansaishi1.dto.UpdatePwdDTO;
+import com.dazuoye.xiaoyuansaishi1.dto.UserDTO;
 import com.dazuoye.xiaoyuansaishi1.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
 
 /**
  * <p>
@@ -23,6 +29,16 @@ public class AuthorController {
 
     @Autowired
     private AuthorService authorService;
+
+    /**
+     * 主办方注册
+     * @param authorDTO
+     * @return
+     */
+    @PostMapping("/register")
+    public Result authorReg(@RequestBody AuthorDTO authorDTO){
+        return authorService.authorReg(authorDTO);
+    }
 
     /**
      * 发送验证码
@@ -66,5 +82,6 @@ public class AuthorController {
     public Result updatePWD(@RequestBody UpdatePwdDTO updatePwdDTO){
         return authorService.updatePwd(updatePwdDTO);
     }
+
 }
 

@@ -23,4 +23,6 @@ public interface AuthorService extends IService<Author> {
     Result checkPhone(String phone);
 
     Result updatePwd(UpdatePwdDTO updatePwdDTO);
+
+    Result authorReg(AuthorDTO authorDTO);
 }

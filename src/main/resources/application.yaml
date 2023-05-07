@@ -31,3 +31,6 @@ mybatis-plus:
 logging:
   level:
     com.hmdp: debug
+
+pic:
+  path: D:\pic\

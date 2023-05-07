@@ -47,7 +47,7 @@ public class Author implements Serializable {
     //@Getter(AccessLevel.NONE)
     //@Setter(AccessLevel.NONE)
     @ApiModelProperty(value = "相关材料")
-    private Blob proof;
+    private String proof;
 
 
 }
