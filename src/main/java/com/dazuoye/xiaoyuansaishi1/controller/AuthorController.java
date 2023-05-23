@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
@@ -83,5 +84,14 @@ public class AuthorController {
         return authorService.updatePwd(updatePwdDTO);
     }
 
+    /**
+     * 查询个人信息
+     * @param request
+     * @return
+     */
+    @GetMapping("/authorInfor")
+    public Result authorInfor(HttpServletRequest request){
+        return authorService.authorInfor(request);
+    }
 }
 

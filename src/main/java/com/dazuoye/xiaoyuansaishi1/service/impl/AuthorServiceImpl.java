@@ -21,7 +21,9 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -198,5 +200,22 @@ public class AuthorServiceImpl extends ServiceImpl<AuthorMapper, Author> impleme
         System.out.println("=================="+authorDTO.getProof());
         save(author);
         return author;
+    }
+
+    @Override
+    public Result authorInfor(HttpServletRequest request) {
+
+        // TODO 获取当前登录主办方的token
+        String token = request.getHeader("token");
+        String tokenKey = LOGIN_USER_KEY + token;
+        String authorname = String.valueOf(stringRedisTemplate.opsForHash().get(tokenKey, "authorname"));
+
+        // TODO 根据用户名查询数据
+        LambdaQueryWrapper<Author> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(Author::getAuthorname,authorname);
+
+        List<Author> list = list(lambdaQueryWrapper);
+
+        return Result.ok(list);
     }
 }

@@ -6,6 +6,8 @@ import com.dazuoye.xiaoyuansaishi1.dto.UpdatePwdDTO;
 import com.dazuoye.xiaoyuansaishi1.entity.Author;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * <p>
  * 主办方表 服务类
@@ -25,4 +27,6 @@ public interface AuthorService extends IService<Author> {
     Result updatePwd(UpdatePwdDTO updatePwdDTO);
 
     Result authorReg(AuthorDTO authorDTO);
+
+    Result authorInfor(HttpServletRequest request);
 }

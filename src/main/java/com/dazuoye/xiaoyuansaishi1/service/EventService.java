@@ -19,4 +19,6 @@ public interface EventService extends IService<Event> {
     Result postEvent(Event event, HttpServletRequest request);
 
     Result eventForm(int page, int pageSize,HttpServletRequest request);
+
+    Result delEvent(String name);
 }

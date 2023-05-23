@@ -51,5 +51,15 @@ public class EventController {
     public Result eventForm(@RequestParam("page") int page,@RequestParam("pageSize")int pageSize,HttpServletRequest request){
         return eventService.eventForm(page,pageSize,request);
     }
+
+    /**
+     * 删除赛事
+     * @param name
+     * @return
+     */
+    @DeleteMapping("/delEvent")
+    public Result delEvent(@RequestParam("name")String name){
+        return eventService.delEvent(name);
+    }
 }
 

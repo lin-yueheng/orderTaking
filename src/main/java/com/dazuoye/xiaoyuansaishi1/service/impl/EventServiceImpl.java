@@ -125,4 +125,11 @@ public class EventServiceImpl extends ServiceImpl<EventMapper, Event> implements
         return schedule;
     }
 
+    @Override
+    public Result delEvent(String name){
+        QueryWrapper<Event> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("name",name);
+        remove(queryWrapper);
+        return Result.ok();
+    }
 }
