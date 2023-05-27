@@ -2,14 +2,17 @@ package com.dazuoye.xiaoyuansaishi1.controller;
 
 
 import cn.hutool.db.Page;
+import com.dazuoye.xiaoyuansaishi1.dto.EventDto;
 import com.dazuoye.xiaoyuansaishi1.dto.Result;
 import com.dazuoye.xiaoyuansaishi1.entity.Event;
+import com.dazuoye.xiaoyuansaishi1.entity.Event_n;
 import com.dazuoye.xiaoyuansaishi1.service.EventService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * <p>
@@ -60,6 +63,24 @@ public class EventController {
     @DeleteMapping("/delEvent")
     public Result delEvent(@RequestParam("name")String name){
         return eventService.delEvent(name);
+    }
+
+    /**
+     * 获取所有的赛事
+     * @return
+     */
+    @GetMapping("getEvent")
+    public List<EventDto> getEvent() {
+        return eventService.getEvent();
+    }
+
+    /**
+     * 获取详细的赛事信息
+     * @return
+     */
+    @GetMapping("getDetailEvent")
+    public List<Event_n> getDetailEvent(){
+        return eventService.getDetailEvent();
     }
 }
 

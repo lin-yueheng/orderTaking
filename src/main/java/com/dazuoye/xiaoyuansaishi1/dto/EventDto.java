@@ -20,6 +20,9 @@ public class EventDto {
     @ApiModelProperty(value = "赛事赛制")
     private String format;
 
+    @ApiModelProperty(value = "赛场")
+    private String competitionName;
+
     @ApiModelProperty(value = "安排")
     private String schedule;
 

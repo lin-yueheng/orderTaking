@@ -6,11 +6,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dazuoye.xiaoyuansaishi1.dto.EventDto;
 import com.dazuoye.xiaoyuansaishi1.dto.Result;
 import com.dazuoye.xiaoyuansaishi1.entity.Event;
+import com.dazuoye.xiaoyuansaishi1.entity.Event_n;
 import com.dazuoye.xiaoyuansaishi1.mapper.EventMapper;
 import com.dazuoye.xiaoyuansaishi1.service.EventService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
@@ -38,6 +40,8 @@ public class EventServiceImpl extends ServiceImpl<EventMapper, Event> implements
 
     @Resource
     StringRedisTemplate stringRedisTemplate;
+    @Autowired
+    EventMapper eventMapper;
 
     @Override
     public Result postEvent(Event event,HttpServletRequest request){
@@ -131,5 +135,15 @@ public class EventServiceImpl extends ServiceImpl<EventMapper, Event> implements
         queryWrapper.eq("name",name);
         remove(queryWrapper);
         return Result.ok();
+    }
+
+    @Override
+    public List<EventDto> getEvent() {
+        return eventMapper.getEvent();
+    }
+
+    @Override
+    public List<Event_n> getDetailEvent(){
+            return eventMapper.getDetailEvent();
     }
 }

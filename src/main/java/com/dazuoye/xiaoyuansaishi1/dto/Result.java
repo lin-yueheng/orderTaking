@@ -20,7 +20,6 @@ public class Result {
         return new Result(true, null, null, null);
     }
     public static Result ok(Object data){
-
         return new Result(true, null, data, null);
     }
     public static Result ok(List<?> data, Long total){
