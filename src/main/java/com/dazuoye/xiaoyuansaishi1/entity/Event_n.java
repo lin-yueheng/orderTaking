@@ -30,6 +30,9 @@ public class Event_n implements Serializable {
     @ApiModelProperty(value = "赛事名称")
     private String name;
 
+    @ApiModelProperty(value = "场地")
+    private String Vname;
+
     @ApiModelProperty(value = "赛事类型")
     private String type;
 

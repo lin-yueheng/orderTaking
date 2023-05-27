@@ -24,8 +24,9 @@ public interface EventMapper extends BaseMapper<Event> {
             "         INNER JOIN event e ON v.id = e.venue_id;")
     List<EventDto> getEvent();
 
-    @Select("SELECT id, name, type, format, registration1, registration2, holding1, holding2, " +
-            "venue_id, introduction, rule, demand, awards, " +
-            "picture, create_time, update_time, create_user, update_user, status FROM event WHERE id=#{id};")
+    @Select("SELECT v.name AS Vname,e.id, e.name, e.type, e.format, e.registration1, e.registration2, e.holding1, e.holding2, " +
+            "e.venue_id, e.introduction, e.rule, e.demand, e.awards, " +
+            "e.picture, e.create_time, e.update_time, e.create_user, e.update_user, e.status FROM event e  " +
+            "INNER JOIN venue v ON v.id=e.venue_id WHERE e.id=#{id}")
     List<Event_n> getDetailEvent(Long id);
 }
