@@ -1,5 +1,6 @@
 package com.dazuoye.xiaoyuansaishi1.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,14 +28,18 @@ public class EventDto {
     private int status;
 
     @ApiModelProperty(value = "报名开始时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH点", timezone = "GMT+8")
     private Date registration1;
 
     @ApiModelProperty(value = "报名截止时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH点", timezone = "GMT+8")
     private Date registration2;
 
     @ApiModelProperty(value = "举办开办时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH点", timezone = "GMT+8")
     private Date holding1;
 
     @ApiModelProperty(value = "举办结束时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH点", timezone = "GMT+8")
     private Date holding2;
 }

@@ -79,8 +79,8 @@ public class EventController {
      * @return
      */
     @GetMapping("getDetailEvent")
-    public List<Event_n> getDetailEvent(){
-        return eventService.getDetailEvent();
+    public List<Event_n> getDetailEvent(@RequestParam(value = "id") Long id){
+        return eventService.getDetailEvent(id);
     }
 }
 

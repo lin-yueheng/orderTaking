@@ -1,35 +1,26 @@
 package com.dazuoye.xiaoyuansaishi1.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-
-import java.time.LocalDateTime;
-import java.util.Date;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import java.io.Serializable;
-
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import org.springframework.format.annotation.DateTimeFormat;
 
-/**
- * <p>
- * 比赛
- * </p>
- *
- * @author ${author}
- * @since 2023-05-10
- */
+import java.io.Serializable;
+import java.util.Date;
+
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
+@TableName("event")
 @ApiModel(value="Event对象", description="比赛")
-public class Event implements Serializable {
+public class Event_n implements Serializable {
 
     private static final long serialVersionUID=1L;
 
@@ -45,32 +36,24 @@ public class Event implements Serializable {
     @ApiModelProperty(value = "赛事赛制")
     private String format;
 
-    @ApiModelProperty(value = "报名开始时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH点", timezone = "GMT+8")
+    @ApiModelProperty(value = "报名开始时间")
     private Date registration1;
 
-    @ApiModelProperty(value = "报名截止时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH点", timezone = "GMT+8")
+    @ApiModelProperty(value = "报名截止时间")
     private Date registration2;
 
     @ApiModelProperty(value = "举办开办时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH点", timezone = "GMT+8")
     private Date holding1;
 
-    @ApiModelProperty(value = "举办结束时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH点", timezone = "GMT+8")
+    @ApiModelProperty(value = "举办结束时间")
     private Date holding2;
 
-    @TableField(fill = FieldFill.INSERT)
-    @JsonFormat(pattern = "yyyy-MM-dd HH点", timezone = "GMT+8")
-    private LocalDateTime createTime;
-
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    @JsonFormat(pattern = "yyyy-MM-dd HH点", timezone = "GMT+8")
-    private LocalDateTime updateTime;
-
     @ApiModelProperty(value = "场馆id")
-    private Long venueId;
+    private long venueId;
 
     @ApiModelProperty(value = "赛事介绍")
     private String introduction;
@@ -87,11 +70,21 @@ public class Event implements Serializable {
     @ApiModelProperty(value = "图片")
     private String picture;
 
-    @ApiModelProperty(value = "比赛审核状态：-1：审核未通过；0：待审核；1：审核已通过")
-    private int status;
+    @TableField(fill = FieldFill.INSERT,value = "create_time")
+    @JsonFormat(pattern = "yyyy-MM-dd HH点",timezone = "GMT+8")
+    private Date createTime;
 
+    @TableField(fill = FieldFill.INSERT_UPDATE,value = "update_time")
+    @JsonFormat(pattern = "yyyy-MM-dd HH点",timezone = "GMT+8")
+    private Date updateTime;
+
+    @ApiModelProperty(value = "比赛审核状态：-1：审核未通过；0：待审核；1：审核已通过")
+    private byte status;
+
+    @TableField(value = "create_user")
     private String createUser;
 
+    @TableField(value = "update_user")
     private String updateUser;
 
 }

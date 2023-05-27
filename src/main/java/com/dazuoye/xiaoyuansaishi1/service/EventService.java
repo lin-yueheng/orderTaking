@@ -29,5 +29,5 @@ public interface EventService extends IService<Event> {
     List<EventDto> getEvent();
 
     //获取赛程的详细信息
-    List<Event_n> getDetailEvent();
+    List<Event_n> getDetailEvent(Long id);
 }

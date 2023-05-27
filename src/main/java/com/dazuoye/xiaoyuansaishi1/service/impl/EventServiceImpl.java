@@ -143,7 +143,7 @@ public class EventServiceImpl extends ServiceImpl<EventMapper, Event> implements
     }
 
     @Override
-    public List<Event_n> getDetailEvent(){
-            return eventMapper.getDetailEvent();
+    public List<Event_n> getDetailEvent(Long id){
+            return eventMapper.getDetailEvent(id);
     }
 }

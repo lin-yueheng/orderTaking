@@ -19,13 +19,13 @@ import java.util.List;
  */
 @Mapper
 public interface EventMapper extends BaseMapper<Event> {
-    @Select("SELECT v.name , e.holding1\n" +
+    @Select("SELECT v.name , e.holding1,e.id\n" +
             "FROM venue v\n" +
             "         INNER JOIN event e ON v.id = e.venue_id;")
     List<EventDto> getEvent();
 
     @Select("SELECT id, name, type, format, registration1, registration2, holding1, holding2, " +
             "venue_id, introduction, rule, demand, awards, " +
-            "picture, create_time, update_time, create_user, update_user, status FROM event;")
-    List<Event_n> getDetailEvent();
+            "picture, create_time, update_time, create_user, update_user, status FROM event WHERE id=#{id};")
+    List<Event_n> getDetailEvent(Long id);
 }
