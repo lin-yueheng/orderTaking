@@ -7,6 +7,7 @@ import com.dazuoye.xiaoyuansaishi1.dto.EventDto;
 import com.dazuoye.xiaoyuansaishi1.dto.Result;
 import com.dazuoye.xiaoyuansaishi1.entity.Event;
 import com.dazuoye.xiaoyuansaishi1.entity.Event_n;
+import com.dazuoye.xiaoyuansaishi1.entity.user_event;
 import com.dazuoye.xiaoyuansaishi1.mapper.EventMapper;
 import com.dazuoye.xiaoyuansaishi1.service.EventService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -145,5 +146,15 @@ public class EventServiceImpl extends ServiceImpl<EventMapper, Event> implements
     @Override
     public List<Event_n> getDetailEvent(Long id){
             return eventMapper.getDetailEvent(id);
+    }
+
+    @Override
+    public int Insert(user_event userEvent){
+        int count = eventMapper.countByUserIdAndEventId(userEvent.getUser_id(), userEvent.getEvent_id());
+        if (count > 0) {
+            // 存在重复数据，返回0表示插入失败
+            return 0;
+        }
+        return eventMapper.Insert(userEvent);
     }
 }

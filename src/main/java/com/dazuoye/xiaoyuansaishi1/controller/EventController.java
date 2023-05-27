@@ -6,6 +6,7 @@ import com.dazuoye.xiaoyuansaishi1.dto.EventDto;
 import com.dazuoye.xiaoyuansaishi1.dto.Result;
 import com.dazuoye.xiaoyuansaishi1.entity.Event;
 import com.dazuoye.xiaoyuansaishi1.entity.Event_n;
+import com.dazuoye.xiaoyuansaishi1.entity.user_event;
 import com.dazuoye.xiaoyuansaishi1.service.EventService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +82,12 @@ public class EventController {
     @GetMapping("getDetailEvent")
     public List<Event_n> getDetailEvent(@RequestParam(value = "id") Long id){
         return eventService.getDetailEvent(id);
+    }
+
+
+    @PostMapping("Insert")
+    public int Insert(@RequestBody user_event userEvent){
+        return eventService.Insert(userEvent);
     }
 }
 

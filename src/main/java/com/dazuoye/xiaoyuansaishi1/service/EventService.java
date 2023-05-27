@@ -5,6 +5,7 @@ import com.dazuoye.xiaoyuansaishi1.dto.Result;
 import com.dazuoye.xiaoyuansaishi1.entity.Event;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dazuoye.xiaoyuansaishi1.entity.Event_n;
+import com.dazuoye.xiaoyuansaishi1.entity.user_event;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -30,4 +31,6 @@ public interface EventService extends IService<Event> {
 
     //获取赛程的详细信息
     List<Event_n> getDetailEvent(Long id);
+
+    int Insert(user_event userEvent);
 }
